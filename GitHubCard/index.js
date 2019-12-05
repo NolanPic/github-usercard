@@ -9,7 +9,9 @@ axios.get('https://api.github.com/users/NolanPic')
     document.querySelector('.cards')
       .appendChild(GitHubCard(res.data));
 
+      return res.data.followers_url;
   })
+  .then(followers_url => fetchFollowers(followers_url)) // STRETCH: grabbing followers programmatically
   .catch(err => console.log(err));
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
@@ -96,7 +98,29 @@ function GitHubCard(profile) {
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+let followersArray = [];
+
+function fetchFollowers(followers_url) {
+  // this first axios call grabs a list of everyone who is a follower
+  axios.get(followers_url)
+    .then(res => {
+      // update followersArray
+      followersArray = res.data.map(follower => follower.login);
+
+      // loop thru followers and fetch their data
+      followersArray.forEach(follower => {
+        // this axios call grabs each individual follower
+        axios.get(`https://api.github.com/users/${follower}`)
+          .then(user => {
+            document.querySelector('.cards')
+              .appendChild(GitHubCard(user.data));
+          });
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
