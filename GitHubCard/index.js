@@ -5,6 +5,10 @@
 axios.get('https://api.github.com/users/NolanPic')
   .then(res => {
     console.log(res.data);
+
+    document.querySelector('.cards')
+      .appendChild(GitHubCard(res.data));
+
   })
   .catch(err => console.log(err));
 
@@ -28,10 +32,58 @@ function GitHubCard(profile) {
   const img = document.createElement('img');
   img.src = profile.avatar_url;
   img.setAttribute('alt', profile.name);
+  card.appendChild(img);
 
   // card-info
   const cardInfo = document.createElement('div');
   cardInfo.classList.add('card-info');
+  card.appendChild(cardInfo);
+
+  // name
+  const fullName = document.createElement('h3');
+  fullName.classList.add('name');
+  fullName.textContent = profile.name;
+  cardInfo.appendChild(fullName);
+
+  // username
+  const userName = document.createElement('p');
+  userName.classList.add('username');
+  userName.textContent = profile.login;
+  cardInfo.appendChild(userName);
+
+  // location
+  const location = document.createElement('p');
+  location.textContent = `Location: ${profile.location}`;
+  cardInfo.appendChild(location);
+
+  // profile
+  const profileP = document.createElement('p');
+  profileP.textContent = 'Profile: ';
+  cardInfo.appendChild(profileP);
+
+  // profile link
+  const profileLink = document.createElement('a');
+  profileLink.href = profile.html_url;
+  profileLink.textContent = profile.html_url;
+  profileLink.setAttribute('target', '_blank');
+  profileP.appendChild(profileLink);
+
+  // followers
+  const followers = document.createElement('p');
+  followers.textContent = `Followers: ${profile.followers}`;
+  cardInfo.appendChild(followers);
+
+  // following
+  const following = document.createElement('p');
+  following.textContent = `Following: ${profile.following}`;
+  cardInfo.appendChild(following);
+
+  // bio
+  const bio = document.createElement('p');
+  bio.textContent = `Following: ${profile.bio}`;
+  cardInfo.appendChild(bio);
+
+  return card;
 }
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
